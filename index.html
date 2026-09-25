@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>首届蜗牛AI毕业展 · 2026.09.26</title>
+<style>
+  :root{
+    --ink:#1A1A2E; --ink2:#2A2A40; --ink3:#6A6A85;
+    --paper:#FCFCFA; --paper2:#F5F4EE; --paper3:#E8E7E0;
+    --accent:#FF5B1F; --accent2:#E84A0F; --accent-warm:#FFF5EE;
+    --gold:#D4A547; --gold-light:#FBF3DE;
+    --green:#2D6A4F; --green-light:#E8F3EC;
+    --line:rgba(26,26,46,.08);
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-snap-type:y mandatory;}
+  body{
+    font-family:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",-apple-system,"Segoe UI",sans-serif;
+    color:var(--ink);-webkit-font-smoothing:antialiased;background:var(--paper);
+  }
+
+  /* ===== 整页滚动版式：一屏一节，往下连续滚动 ===== */
+  .slide{
+    height:100vh;height:100dvh;
+    scroll-snap-align:start;scroll-snap-stop:always;
+    overflow:hidden;
+    display:flex;flex-direction:column;
+    padding:clamp(28px,4.5vh,56px) clamp(40px,6vw,110px);
+    padding-top:clamp(48px,8vh,84px);
+    padding-bottom:clamp(56px,9vh,92px);
+    position:relative;
+  }
+  .slide.active{animation:riseIn .55s ease both;}
+  @keyframes riseIn{from{opacity:.35;transform:translateY(26px);}to{opacity:1;transform:none;}}
+
+  /* ===== 通用元素 ===== */
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--accent);color:#fff;border-radius:100px;
+    padding:7px 18px;font-size:clamp(12px,1.6vh,15px);font-weight:700;letter-spacing:.12em;
+    width:fit-content;margin-bottom:clamp(10px,2.2vh,22px);
+  }
+  .chip.gold{background:var(--gold);color:#3d2f0a;}
+  .chip.green{background:var(--green);}
+  .slide-no{
+    position:absolute;bottom:clamp(16px,3vh,30px);right:clamp(24px,3vw,48px);
+    font-size:clamp(11px,1.5vh,14px);color:var(--ink3);font-weight:600;letter-spacing:.08em;
+  }
+  .brandmark{
+    position:absolute;top:clamp(18px,3.2vh,34px);right:clamp(24px,3vw,48px);
+    font-size:clamp(13px,1.8vh,17px);font-weight:800;color:var(--ink);opacity:.95;letter-spacing:.04em;
+    display:flex;align-items:center;gap:9px;
+  }
+  /* 官网 logo 芯片（黑底金字，来自 snailai.au） */
+  .logo-chip{
+    height:1.9em;width:auto;border-radius:7px;display:inline-block;vertical-align:-0.55em;
+    box-shadow:0 2px 8px rgba(26,26,46,.18);
+  }
+  .logo-chip.lg{height:clamp(72px,12vh,120px);border-radius:14px;box-shadow:0 10px 30px rgba(26,26,46,.22);}
+  h1.big{font-size:clamp(40px,8.5vh,84px);font-weight:900;line-height:1.14;letter-spacing:.01em;}
+  h2.title{font-size:clamp(26px,4.6vh,44px);font-weight:900;line-height:1.2;}
+  .accentbar{width:64px;height:8px;border-radius:8px;background:var(--accent);margin:clamp(8px,1.8vh,18px) 0;}
+  .sub{color:var(--ink3);font-size:clamp(14px,2.1vh,19px);line-height:1.7;}
+  .scrolldown{
+    position:absolute;bottom:clamp(14px,2.6vh,26px);left:50%;transform:translateX(-50%);
+    color:var(--ink3);font-size:clamp(11px,1.5vh,13px);font-weight:700;letter-spacing:.25em;
+    display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.75;user-select:none;
+  }
+  .scrolldown::after{
+    content:"";width:2px;height:clamp(16px,3vh,28px);
+    background:linear-gradient(var(--accent),transparent);
+    animation:drip 1.6s ease-in-out infinite;
+  }
+  @keyframes drip{0%{transform:scaleY(.2);transform-origin:top;opacity:.3;}55%{transform:scaleY(1);opacity:1;}100%{transform:scaleY(.2);transform-origin:bottom;opacity:.3;}}
+
+  /* ===== 封面 ===== */
+  .cover{justify-content:center;align-items:flex-start;background:
+    radial-gradient(900px 520px at 88% -10%, rgba(255,91,31,.14), transparent 62%),
+    radial-gradient(700px 460px at -6% 108%, rgba(212,165,71,.16), transparent 60%),
+    var(--paper);}
+  .cover .kicker{font-size:clamp(15px,2.4vh,22px);font-weight:700;color:var(--accent);letter-spacing:.35em;margin-bottom:clamp(10px,2vh,20px);}
+  .cover .meta{display:flex;gap:14px;flex-wrap:wrap;margin-top:clamp(20px,4vh,40px);}
+  .cover .meta .pill{border:1.5px solid var(--ink);border-radius:100px;padding:9px 22px;font-size:clamp(13px,1.9vh,17px);font-weight:600;background:#fff;}
+  .cover .meta .pill.solid{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .cover .footline{margin-top:clamp(26px,5.5vh,54px);color:var(--ink3);font-size:clamp(13px,1.9vh,17px);letter-spacing:.06em;}
+
+  /* ===== 视频节 ===== */
+  .video-slide{background:#0E0E16;}
+  .video-slide .vhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:clamp(10px,2vh,20px);}
+  .video-slide .vtitle{color:#fff;font-size:clamp(18px,3vh,28px);font-weight:800;}
+  .video-slide .vsub{color:rgba(255,255,255,.55);font-size:clamp(12px,1.7vh,15px);margin-top:4px;font-weight:500;}
+  /* 影院式舞台：16:9 视频撑满，舞台收紧贴合视频 */
+  .vstage{
+    flex:1;min-height:0;position:relative;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .vbg{display:none;}
+  .vwrap{
+    position:relative;height:100%;aspect-ratio:16/9;max-width:100%;
+    border-radius:16px;overflow:hidden;background:#000;
+    box-shadow:0 24px 70px rgba(0,0,0,.5);
+  }
+  .vwrap video{width:100%;height:100%;object-fit:cover;display:block;outline:none;}
+  /* 课程视频（DD05，1176x784）保持原始比例嵌入，不裁切不变形 */
+  #course-video-wrap{aspect-ratio:1176/784;}
+  #course-video-el{object-fit:contain;}
+  .video-slide .slide-no{color:rgba(255,255,255,.45);}
+
+  /* ===== 学生节通用 ===== */
+  .stu-head{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;}
+  .stu-name{font-size:clamp(34px,6vh,58px);font-weight:900;line-height:1;}
+  .stu-en{font-size:clamp(15px,2.2vh,20px);color:var(--ink3);font-weight:700;letter-spacing:.06em;padding-bottom:6px;}
+  .stu-proj-chip{
+    display:inline-block;background:var(--accent-warm);color:var(--accent2);
+    border:1.5px solid rgba(255,91,31,.35);border-radius:12px;
+    padding:8px 16px;font-weight:800;font-size:clamp(14px,2vh,18px);margin-bottom:clamp(10px,2vh,18px);
+  }
+  .stu-grid{flex:1;display:grid;grid-template-columns:minmax(240px,30%) 1fr;gap:clamp(20px,3.2vw,52px);min-height:0;margin-top:clamp(14px,2.6vh,26px);}
+  .photocard{
+    background:#fff;border:1.5px solid var(--line);border-radius:var(--radius);
+    padding:12px;display:flex;flex-direction:column;gap:12px;min-height:0;
+  }
+  .photocard .ph{flex:1;min-height:0;border-radius:12px;overflow:hidden;background:var(--paper2);position:relative;}
+  .photocard .ph img{width:100%;height:100%;object-fit:contain;display:block;background:#faf9f4;}
+  .photocard .ph.transparent img{object-fit:contain;background:
+    linear-gradient(45deg,#f6f5ef 25%,transparent 25%,transparent 75%,#f6f5ef 75%),
+    linear-gradient(45deg,#f6f5ef 25%,#faf9f4 25%,#faf9f4 75%,#f6f5ef 75%);background-size:22px 22px;background-position:0 0,11px 11px;}
+  .photocard .tag{
+    position:absolute;left:10px;bottom:10px;background:rgba(26,26,46,.82);color:#fff;
+    font-size:clamp(10px,1.4vh,13px);font-weight:700;padding:4px 12px;border-radius:100px;letter-spacing:.1em;
+  }
+  .stu-info{display:flex;flex-direction:column;min-height:0;gap:clamp(8px,1.6vh,16px);}
+  .stu-info .role{color:var(--ink3);font-weight:700;font-size:clamp(13px,1.9vh,16px);letter-spacing:.08em;}
+  .story{font-size:clamp(14.5px,2.15vh,19px);line-height:1.85;color:var(--ink2);}
+  .story b{color:var(--ink);}
+  .story .hl{color:var(--accent2);font-weight:800;}
+  .quotebox{
+    margin-top:auto;background:var(--paper2);border-left:6px solid var(--accent);
+    border-radius:0 14px 14px 0;padding:14px 20px;font-size:clamp(13.5px,2vh,17.5px);
+    color:var(--ink2);font-weight:600;line-height:1.6;
+  }
+
+  /* ===== 作品节 ===== */
+  .works-grid{flex:1;display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(20px,3vw,50px);margin-top:clamp(14px,2.6vh,26px);min-height:0;}
+  .works-main{display:flex;flex-direction:column;gap:clamp(10px,2vh,18px);min-height:0;}
+  .works-desc{font-size:clamp(15px,2.3vh,20px);line-height:1.85;color:var(--ink2);}
+  .featurelist{display:flex;flex-direction:column;gap:clamp(8px,1.5vh,14px);}
+  .feature{
+    display:flex;gap:14px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);
+    border-radius:14px;padding:clamp(10px,1.8vh,16px) clamp(14px,2vw,20px);
+  }
+  .feature .num{
+    flex:none;width:34px;height:34px;border-radius:10px;background:var(--ink);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;
+  }
+  .feature .ft{font-weight:800;font-size:clamp(13.5px,2vh,17px);margin-bottom:3px;}
+  .feature .fd{color:var(--ink3);font-size:clamp(12.5px,1.8vh,15.5px);line-height:1.6;}
+  .feature.musicrow{cursor:pointer;border:1.5px solid var(--accent);background:var(--accent-warm);align-items:center;user-select:none;}
+  .feature.musicrow .num{background:var(--accent);}
+  .feature.musicrow .playbtn{
+    flex:none;margin-left:auto;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;
+  }
+  .feature.musicrow.playing{background:#FFE8DB;}
+  .feature.musicrow.playing .playbtn{animation:mpulse 1.2s ease-in-out infinite;}
+  @keyframes mpulse{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+  .statcard{
+    background:var(--ink);color:#fff;border-radius:var(--radius);padding:clamp(18px,3vh,30px);
+    display:flex;flex-direction:column;gap:clamp(10px,2vh,18px);justify-content:center;
+  }
+  .statcard .row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .statcard .v{font-size:clamp(26px,4.6vh,44px);font-weight:900;color:var(--gold);line-height:1;}
+  .statcard .k{font-size:clamp(12.5px,1.8vh,16px);color:rgba(255,255,255,.75);font-weight:600;}
+  .statcard .divider{height:1px;background:rgba(255,255,255,.14);}
+
+  /* ===== 总览节 ===== */
+  .ov-grid{flex:1;display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:1fr;gap:clamp(10px,1.8vh,18px);margin-top:clamp(14px,2.6vh,26px);min-height:0;}
+  .ov-card{
+    background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:clamp(10px,1.8vh,16px);
+    display:flex;flex-direction:column;gap:6px;justify-content:center;position:relative;overflow:hidden;
+  }
+  .ov-card .idx{position:absolute;top:10px;right:14px;font-size:clamp(18px,3vh,28px);font-weight:900;color:var(--paper3);}
+  .ov-card .nm{font-weight:900;font-size:clamp(15px,2.3vh,21px);}
+  .ov-card .pj{color:var(--ink3);font-size:clamp(11px,1.6vh,14px);font-weight:600;line-height:1.45;}
+  .ov-card.video::after{
+    content:"▶ 有视频";position:absolute;bottom:10px;left:12px;
+    background:var(--accent);color:#fff;font-size:clamp(9px,1.3vh,11px);font-weight:800;
+    padding:3px 10px;border-radius:100px;letter-spacing:.05em;
+  }
+
+  /* ===== 「到底教什么」课程视频屏 · 占位 ===== */
+  .vplaceholder{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:
+      repeating-linear-gradient(135deg,#14141f 0 26px,#171722 26px 52px);
+    text-align:center;padding:24px;
+  }
+  .vplaceholder.hidden{display:none;}
+  .ph-emoji{font-size:clamp(40px,7vh,68px);line-height:1;filter:drop-shadow(0 8px 24px rgba(255,91,31,.35));}
+  .ph-title{color:#fff;font-weight:900;font-size:clamp(20px,3.6vh,32px);letter-spacing:.12em;}
+  .ph-desc{color:rgba(255,255,255,.55);font-size:clamp(12px,1.9vh,16px);line-height:1.8;font-weight:600;}
+  .ph-desc b{color:var(--gold);font-weight:800;}
+
+  /* ===== Robin / 课程节 ===== */
+  .course-grid{flex:1;display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(24px,3.4vw,56px);margin-top:clamp(16px,3vh,28px);min-height:0;align-items:stretch;}
+  .pricecard{
+    background:linear-gradient(160deg,var(--ink) 0%,#232338 100%);color:#fff;border-radius:22px;
+    padding:clamp(22px,4vh,42px);display:flex;flex-direction:column;gap:clamp(10px,2vh,18px);
+  }
+  .pricecard .cname{font-size:clamp(20px,3.4vh,30px);font-weight:900;}
+  .pricecard .price{font-size:clamp(38px,7vh,66px);font-weight:900;color:var(--gold);line-height:1;}
+  .pricecard .per{color:rgba(255,255,255,.65);font-size:clamp(13px,2vh,17px);}
+  .checklist{display:flex;flex-direction:column;gap:clamp(8px,1.6vh,15px);justify-content:center;}
+  .checklist .it{display:flex;gap:12px;align-items:flex-start;font-size:clamp(13px,1.9vh,16.5px);line-height:1.6;color:var(--ink2);}
+  .checklist .it::before{content:"✓";flex:none;width:23px;height:23px;border-radius:7px;background:var(--green-light);color:var(--green);font-weight:900;display:flex;align-items:center;justify-content:center;font-size:12.5px;margin-top:2px;}
+  .cta-big{
+    background:var(--accent);color:#fff;text-align:center;border-radius:16px;
+    padding:clamp(12px,2vh,18px);font-size:clamp(14px,2.1vh,19px);font-weight:900;letter-spacing:.04em;
+  }
+  .cta-big small{display:block;font-size:.55em;font-weight:600;opacity:.85;margin-top:4px;letter-spacing:.1em;}
+  .buy-row{margin-top:auto;display:flex;gap:clamp(14px,2vw,26px);align-items:stretch;}
+  .buy-row .cta-big{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:0;}
+  .qrcard{
+    flex:none;background:#fff;border-radius:16px;padding:clamp(8px,1.4vh,12px);
+    display:flex;flex-direction:column;align-items:center;gap:5px;
+  }
+  .qrcard img{width:clamp(200px,28vh,300px);height:auto;display:block;border-radius:8px;}
+  .qrcard small{font-size:clamp(10px,1.5vh,12.5px);font-weight:800;color:var(--ink);letter-spacing:.06em;}
+
+  /* ===== 结尾 ===== */
+  .end{justify-content:center;align-items:center;text-align:center;background:
+    radial-gradient(1000px 600px at 50% 120%, rgba(255,91,31,.18), transparent 65%),var(--ink);color:#fff;}
+  .end h1{font-size:clamp(40px,9vh,88px);font-weight:900;letter-spacing:.02em;}
+  .end .sub2{color:rgba(255,255,255,.65);margin-top:clamp(14px,3vh,28px);font-size:clamp(15px,2.4vh,22px);line-height:1.8;}
+  .end .url{margin-top:clamp(22px,4.5vh,44px);background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.25);border-radius:100px;padding:12px 34px;font-size:clamp(15px,2.4vh,22px);font-weight:800;color:var(--gold);letter-spacing:.06em;}
+
+  /* ===== 滚动导航 ===== */
+  #topbar{position:fixed;top:0;left:0;right:0;height:5px;background:rgba(26,26,46,.08);z-index:60;}
+  #progress{height:100%;width:0;background:var(--accent);transition:width .15s linear;}
+  #counter{
+    position:fixed;top:16px;left:22px;z-index:61;
+    background:rgba(26,26,46,.85);color:#fff;border-radius:100px;padding:6px 18px;
+    font-size:13px;font-weight:700;letter-spacing:.1em;user-select:none;
+  }
+  #hint{
+    position:fixed;bottom:14px;left:22px;z-index:61;color:rgba(26,26,46,.4);
+    font-size:12px;font-weight:600;letter-spacing:.05em;user-select:none;pointer-events:none;
+  }
+</style>
+</head>
+<body>
+
+<script>
+/* ================= 数据区（改文字只改这里） ================= */
+const OPENING_VIDEO = {
+  title:"开场视频 ·《在悉尼，一群AI小白把毕业作品做成了真项目》",
+  sub:"0926 毕业展海报视频 完整版 · 每一位学员从自己的海报中走出来",
+  src:"videos/开场_DD04_16x9完整版.mp4"
+};
+
+const STUDENTS = [
+  {
+    name:"老刘", en:"LIU", idx:1, role:"第一期学员 · 全班公认「封神」项目",
+    project:"邮件AI助手 + 出租物业管理系统", hasVideo:true,
+    video:{src:"videos/16x9/老刘_EP02_物业管理系统_16x9.mp4", title:"EP02 ·《10套房压垮3个邮箱？一键搞定物业账》", sub:"老刘的故事 · 全网已发行（视频号 / 抖音 / 小红书）"},
+    real:"images/老刘_真实.jpg", threeD:"images/老刘_3d.png",
+    story:`名下<b>十几套投资房</b>，曾是标准的「人肉管家」——三个邮箱轮番轰炸：中介月报、租客诉求、水电账单，每天一睁眼先处理邮件，租金要盯、账要手工记、报税资料翻箱倒柜。<br><br>在蜗牛AI课堂，他把物业管理从「信息收集」做到了<span class="hl">「事情办完」</span>：邮件自动收取归类、账目一键计算、报税资料一键打包，<b>一键生成物业报告的技能已发布进蜗牛AI学生技能库</b>，直接给全班复用。`,
+    quote:"把 AI 用成真正的免费员工——他就是全班活教材。",
+    works:{
+      title:"出租物业管理系统 · 邮件AI助手",
+      desc:"一套替房东「办事」而非「记事」的系统：从收到邮件那一刻起，归类、记账、生成报告全部自动完成，房东只在关键动作上拍板。",
+      points:[
+        ["邮件自动归档","三邮箱统一接入，中介月报 / 租客诉求 / 账单自动分类"],
+        ["账目一键计算","租金、支出、现金流自动汇总，报税资料一键打包"],
+        ["物业报告技能","一键生成整租物业报告，已上架蜗牛AI学生技能库"],
+        ["EP02 宣传片主角","个人故事已被制作成3D动画宣传片，三平台发行"]
+      ],
+      stats:[["10+","管理投资房"],["3→1","邮箱归一自动处理"],["1-click","物业报告生成"]]
+    }
+  },
+  {
+    name:"素萍", en:"GRACE", idx:2, role:"第一期学员 · 有望成为初级班老师",
+    project:"Bose 音响租赁平台", hasVideo:false,
+    real:"images/素萍Grace_真实.jpg", threeD:"images/素萍Grace_3d.png",
+    story:`经营音响租赁生意多年——设备租赁全靠人工对接：客户询价、档期排表、押金管理、运输安排，一样都不能少，一样都离不开人。<br><br>她带着<b>38 页策划书</b>走进毕业展：对标行业标杆 DJ Warehouse，从市场分析、租赁规则（押金 / 时段 / 物流）到页面结构逐页设计，把一门传统生意搬上线上。课堂上反应快、敢拍板，自己也想做蜗牛AI 的初级老师——Robin 非常看好，<span class="hl">她有望在未来成为初级班老师</span>。`,
+    quote:"从用 AI 做生意，到教别人用 AI 做生意。",
+    works:{
+      title:"Bose 音响租赁平台",
+      desc:"把音响租赁的询价、预订、押金、物流整套规则线上化——客户自助下单，档期一目了然，生意不再拴在微信里。",
+      points:[
+        ["在线预订","设备展示 + 档期查询 + 在线下单，客户自助完成"],
+        ["租赁规则引擎","押金 / 时段 / 运输费计算规则全部线上固化"],
+        ["38页专业策划书","对标 DJ Warehouse，页面逐页设计到19项粒度"],
+        ["策划书范本","她的策划书已成为蜗牛AI教学样本，供后续学员参考"]
+      ],
+      stats:[["38页","项目策划书"],["1条龙","询价→下单→物流"],["未来","初级班老师"]]
+    }
+  },
+  {
+    name:"Stephanie", en:"WANG", idx:3, role:"第一期学员 · 自助卖房实践者",
+    project:"Burwood 房产私售", hasVideo:true,
+    video:{src:"videos/16x9/Stephanie_EP01_卖房_16x9.mp4", title:"EP01 ·《不请中介，两周卖房，省下2万5》", sub:"Stephanie 的故事 · 全网已发行（视频号 / 抖音 / 小红书）"},
+    real:"images/Stephanie_真实.jpg", threeD:"images/Stephanie_3d.png",
+    story:`卖房时中介报价：佣金 <b>1.5万–2.5万澳元</b>。她决定不请中介——用课堂学的 AI 方法，自建<b>双语卖房网站</b>，再搭一套「买家咨询自动通知系统」：买家询盘自动推送手机、AI 一分钟内生成回复邮件。<br><br>结果：上市仅两周，<span class="hl">20 多位买家上门，两位真实买家进入出价谈判</span>。省下的佣金一半让利买家，成交更快、价格更低——这就是 AI 时代普通人的卖房方式。`,
+    quote:"中介能做的事，AI + 你自己也能做——而且省下两万五。",
+    works:{
+      title:"Burwood 房产私售 · 全流程 AI 卖房",
+      desc:"从双语卖房网站、买家咨询自动通知，到 AI 生成买家回复、自动 follow-up——中介的核心职能被一套 AI 工作流接管。",
+      points:[
+        ["双语卖房网站","房源展示 + 合同/报告下载，买家自助获取"],
+        ["咨询自动通知","企业微信 + 定时收信，询盘永不漏接"],
+        ["AI 秒级回复","通用版 + 针对性回答 + 主动追问，一分钟生成"],
+        ["自动 Follow-up","首封邮件后次日同时刻自动跟进一轮"]
+      ],
+      stats:[["2周","上市到出价"],["2.5万","省下佣金（澳元）"],["2位","真实买家出价"]]
+    }
+  },
+  {
+    name:"Mandy", en:"MANDY", idx:4, role:"第一期线上课学员",
+    project:"Mandy 护肤品电商网站", hasVideo:true,
+    video:{src:"videos/16x9/Mandy_DD02_护肤品电商_16x9.mp4", title:"DD02 ·《在悉尼，不会写代码的她开了一家网店》", sub:"Mandy 的故事 · 全网已发行（视频号 / 抖音 / 小红书）"},
+    real:"images/Mandy_真实.jpg", threeD:"images/Mandy_3d.png",
+    story:`线上课学员，人在中国照顾生病的妈妈，课程末期才飞回悉尼。所有人都以为她不会参加毕业展示——她主动找到 Robin：<b>「为什么我不参加 presentation？」</b><br><br>最后一个星期，她「加班加点」补完全部课程：护肤品品牌定位、产品素材、电商网站，全部用 AI 搭建完成。她的故事被制作成<span class="hl">DD02 宣传片</span>，全网发行。`,
+    quote:"态度，是最好的毕业作品。",
+    works:{
+      title:"Mandy 护肤品电商网站",
+      desc:"一个不懂代码的老板娘，用 AI 做出真实上线的护肤品电商——品牌、选品、页面、下单流程完整。",
+      points:[
+        ["品牌线上化","护肤品品牌完整搬到线上，产品页 + 购物车齐全"],
+        ["素材 AI 生成","产品图与品牌视觉全部 AI 产出"],
+        ["全流程自营","从选品到上架不依赖外包，一人搞定"],
+        ["DD02 宣传片主角","个人故事3D化，三平台发行"]
+      ],
+      stats:[["1周","最后冲刺完成"],["0行","手写代码"],["3平台","故事全网发行"]]
+    }
+  },
+  {
+    name:"Maureen", en:"MAUREEN", idx:5, role:"第一期学员",
+    project:"THE RED APPLE 绘本游戏", hasVideo:false,
+    real:"images/Maureen_真实.jpg", threeD:"images/Maureen_3d.png",
+    music:{src:"music/Maureen_Aru_Ma_Nora.mp3", title:"原创歌曲《Aru Ma Nora》", desc:"Maureen 自己做的音乐"},
+    story:`别人学 AI 做网站、做系统，她用 AI 做了一个<b>游戏</b>——THE RED APPLE，一款 Unity 6 打造的 2D 绘本冒险游戏：雪景树环、温馨厨房、小屋、瀑布、云端场景，画风梦幻治愈。<br><br>8 个游戏场景、11 个脚本，还自己写编辑器工具一键搭景、自动摆放家具——<span class="hl">48 次迭代持续开发中，艺术素材与代码协同生长</span>。`,
+    quote:"AI 时代，做游戏不再是工作室的专利。",
+    works:{
+      title:"THE RED APPLE 绘本游戏",
+      desc:"基于 Unity 6（URP 2D）的 2D 故事书游戏——雪景、厨房、瀑布、云端，一章一章长出来。",
+      points:[
+        ["8个场景","雪景树环 / 小屋 / 厨房 / 瀑布 / 云端等"],
+        ["绘本画风","20 张美术图 + 12 段视频素材"],
+        ["编辑器工具","一键搭建雪景、自动布置厨房家具"],
+        ["持续迭代","48 次 commit，角色与场景不断扩展"]
+      ],
+      stats:[["8个","游戏场景"],["11个","游戏脚本"],["Unity 6","URP 2D 引擎"]]
+    }
+  },
+  {
+    name:"仙路", en:"XIANLU", idx:6, role:"第一期学员 + 助教",
+    project:"仙路工服网站", hasVideo:true,
+    video:{src:"videos/16x9/仙路_EP04_工服网站_16x9.mp4", title:"EP04 ·《在澳洲，她不懂代码却做出了真实上线的电商网站》", sub:"仙路的故事 · 全网已发行（视频号 / 抖音 / 小红书）"},
+    real:"images/仙路_真实.png", threeD:"images/仙路_3d.png",
+    story:`经营工服生意，客户要的都是「定制」：不同行业、不同岗位、不同尺码组合，报价与下单全靠人工来回。她不懂代码，走进蜗牛AI课堂时连 HTML 是什么都不确定。<br><br>如今她的<b>工服网站真实上线</b>：客户自助选品、企业定制流程完整走通。一边做项目一边当助教带新同学，她的故事被制作成<span class="hl">EP04 宣传片</span>。`,
+    quote:"不懂代码不是门槛，不开始才是。",
+    works:{
+      title:"仙路工服网站",
+      desc:"真实上线的工服电商网站——个人客户直接下单，企业客户定制流程线上化。",
+      points:[
+        ["真实上线","不是练习品——网站已在澳洲正式运营"],
+        ["在线选品下单","工服品类展示 + 购物车 + 订单流程"],
+        ["企业定制流程","批量定制询价与报价流程线上化"],
+        ["学员 + 助教","自己做出项目后，回头带新一期学员"]
+      ],
+      stats:[["真实","上线运营中"],["2个身份","学员 + 助教"],["EP04","个人专属宣传片"]]
+    }
+  },
+  {
+    name:"Lucy", en:"LUCY", idx:7, role:"第一期学员 · 品牌主理人",
+    project:"诗露舒养身心平台", hasVideo:false,
+    real:"images/Lucy_真实.jpg", threeD:"images/Lucy_3d.png",
+    story:`养生品牌「诗露舒」主理人。以前品牌的内容、客户、课程安排散落在微信聊天记录里，找一个客户资料要翻半天。<br><br>她把品牌搬上<span class="hl">「诗露舒养身心平台」</span>：品牌展示、产品线、养生内容体系化管理。9/16 直播课上第一个响应「我要做展示」，是毕业展最积极的学员之一。`,
+    quote:"品牌的第一步，是有一个自己的平台。",
+    works:{
+      title:"诗露舒养身心平台 · WELLNESS BRAND PLATFORM",
+      desc:"养生品牌一站式平台——品牌故事、产品线、养生内容温润展开，客户从认识到成交都在站内完成。",
+      points:[
+        ["品牌展示","品牌故事 + 产品线完整呈现"],
+        ["内容体系","养生内容板块化沉淀，不再是散落的聊天记录"],
+        ["客户平台化","询价与咨询走平台，不再淹没在微信里"],
+        ["课堂积极分子","直播课第一个报名毕业展示"]
+      ],
+      stats:[["1个","品牌平台"],["0","代码基础起步"],["首位","报名毕业展示"]]
+    }
+  },
+  {
+    name:"Serena", en:"SERENA", idx:8, role:"第一期学员 · 墨尔本 · 全程线上",
+    project:"AI 房产财务操作系统", hasVideo:false,
+    real:"images/Serena_真实.jpg", threeD:"images/Serena_3d.png",
+    story:`人在墨尔本，全程线上深度参与课程。9/16 直播课上 Robin 点名「Sirena 你在墨尔本吧？上下麦好吗？」——隔着 700 公里照样上台。<br><br>她的作品直击澳洲人最关心的两件事：<span class="hl">房子 + 账本</span>——物业信息、财务报表、现金流在一个系统里同框管理，EP03 宣传片里她的角色设定就是「房产财务 OS」作者。`,
+    quote:"距离不是问题，线上也能做出真系统。",
+    works:{
+      title:"AI 房产财务操作系统 · PROPERTY FINANCE OS",
+      desc:"房产信息与财务数据同框管理——物业、报表、现金流一屏尽览，AI 辅助生成财务洞察。",
+      points:[
+        ["物业台账","名下物业信息统一管理"],
+        ["财务报表","收支、现金流自动汇总呈现"],
+        ["AI 洞察","财务数据 AI 解读，趋势一目了然"],
+        ["EP03 群像主角","毕业展宣传片七大学员案例之一"]
+      ],
+      stats:[["700km","远程线上完成"],["1屏","房子+账本同框"],["EP03","宣传片学员群像之一"]]
+    }
+  },
+  {
+    name:"Simon", en:"SIMON", idx:9, role:"第一期学员",
+    project:"Simon 高级选股器 V2.0", hasVideo:false,
+    real:"images/Simon_真实.jpg", threeD:"images/Simon_3d.png",
+    story:`「AI 未来竞争力与资金流研究系统」——这是他给项目的自我定位。从第一版到 V2.0，前后端、数据库、评分模型全部 AI 协作完成。<br><br>系统已实现<b>四维评分引擎</b>（FCS / ECS / MFS / RPS）、资金流数据、研究卡与因果链——不是抄来的股票软件，而是<span class="hl">带研究方法论</span>的自主系统。`,
+    quote:"别人看软件，他建研究体系。",
+    works:{
+      title:"Simon 高级选股器 V2.0",
+      desc:"FastAPI + SQLite 构建的选股研究系统：评分引擎、资金流、研究证据链、仪表盘四位一体。",
+      points:[
+        ["四维评分引擎","FCS / ECS / MFS / RPS 多因子综合评分"],
+        ["资金流研究","资金流向数据与变化追踪"],
+        ["研究卡+因果链","每只股票附证据与推理链，可解释不黑箱"],
+        ["仪表盘汇总","全市场扫描结果一屏呈现"]
+      ],
+      stats:[["V2.0","两轮迭代"],["4维","评分引擎"],["全栈","前后端+数据库"]]
+    }
+  },
+  {
+    name:"Zoe", en:"ZOE", idx:10, role:"第一期学员",
+    project:"ZOE 股票基金筛选系统", hasVideo:false,
+    real:"images/Zoe_真实.jpg", threeD:"images/Zoe_3d.jpg",
+    story:`她给系统起名叫 <b>ZOE</b>——一套「科学、稳定、可解释」的股票基金筛选系统。强调三个原则：评分基于数据截面、不构成投资建议、<span class="hl">零外部依赖</span>（仅 Python 标准库就能跑起来）。<br><br>对小白最友好的设计是「新手术语」页：ROE、PE、PEG、护城河、质押……看不懂的词，系统里直接查。`,
+    quote:"量化工具，也可以对小白温柔。",
+    works:{
+      title:"ZOE 股票基金筛选系统",
+      desc:"多因子量化评分 + SQLite 数据层 + Web UI，五大模块覆盖从筛选到复盘的完整闭环。",
+      points:[
+        ["工作台","股票列表、综合评分、风险标记、筛选导出"],
+        ["预警风控","风险股自动汇总 + 自定义预警规则"],
+        ["组合推荐","稳健 / 成长 / 激进三类组合一键生成"],
+        ["每日复盘+新手术语","买卖点信号 + 小白友好术语词典"]
+      ],
+      stats:[["5大","功能模块"],["0","外部依赖"],["2类","股票+基金"]]
+    }
+  },
+  {
+    name:"Jason王", en:"JASON WANG", idx:11, role:"第一期学员",
+    project:"Jason AI CRM", hasVideo:false,
+    real:"images/Jason王_真实.jpg", threeD:"images/Jason王_3d.png",
+    story:`客户资料躺在微信、Excel、备忘录三个地方？他做了自己的 <b>Jason AI CRM</b>——客户卡片、跟进记录、商机管理一体化，并接入 AI 辅助判断。<br><br>EP03 宣传片里的经典画面：他的「JASON AI CRM」客户卡片整齐排列，与 Lucy 的养生平台隔屏相望、相互点头——<span class="hl">七个学员案例之一</span>。`,
+    quote:"客户资产，应该长在自己的系统里。",
+    works:{
+      title:"Jason AI CRM",
+      desc:"个人版客户关系管理系统：客户、跟进、商机三层数据，AI 辅助客户洞察。",
+      points:[
+        ["客户卡片","客户信息结构化管理，告别微信翻聊天记录"],
+        ["跟进记录","每次沟通留痕，下次跟进不靠记忆"],
+        ["商机管理","销售机会阶段化推进"],
+        ["EP03 群像主角","毕业展宣传片七大学员案例之一"]
+      ],
+      stats:[["3层","客户/跟进/商机"],["AI","辅助洞察"],["EP03","宣传片学员群像之一"]]
+    }
+  },
+  {
+    name:"Jackie", en:"JACKIE", idx:12, role:"第一期学员",
+    project:"OptiPilot 光电仪表电商站", hasVideo:false,
+    real:"images/Jackie_真实.jpg", threeD:"images/Jackie_3d.png",
+    story:`他做光电测量仪表生意，产品线多、规格复杂、询价来回扯皮。他用 AI 搭起了 <b>OptiPilot 澳洲光电仪表电商站</b>——中英双语，产品与配件展示、会员体系、购物车、订单审核工作流一应俱全。<br><br>后台完整增删改查 + 操作日志 + 角色权限，零依赖 Node 服务直接跑——<span class="hl">从展示站到能接单的电商站，一步到位</span>。`,
+    quote:"生意做到哪，系统就跟到哪。",
+    works:{
+      title:"OptiPilot 光电仪表电商站",
+      desc:"面向澳洲市场的光电测量仪器展示 + 电商站点，中英双语，含会员体系与订单工作流。",
+      points:[
+        ["双语电商","产品 / 配件展示与购买，面向澳洲市场"],
+        ["会员体系","注册登录、购物车、会员 9.5 折"],
+        ["订单工作流","下单 → 审核 → 履约，后台完整管理"],
+        ["零依赖架构","Node 原生服务 + SQLite，无需安装任何包"]
+      ],
+      stats:[["双语","中英双站"],["0依赖","Node 原生实现"],["全流程","购物车→订单→后台"]]
+    }
+  },
+  {
+    name:"Michael", en:"MICHAEL", idx:13, role:"第一期学员 + 助教",
+    project:"家庭营养 · 食材规划系统", hasVideo:false,
+    real:"images/Michael_真实.jpg", threeD:"images/Michael_3d.png",
+    story:`家里有<b>孕中晚期的太太</b>和 <b>1.5 岁的女儿</b>——吃什么、营养够不够，全靠脑记？他做了一套<b>家庭营养 · 食材规划系统</b>：每日 6 餐次餐单、大人小孩分列「一锅两吃」、24 道食谱按补铁 / 补钙 / 补DHA 一键筛选。<br><br>营养追踪对照 DRIs 标准红黄绿显示达标情况，采购清单自动扣掉家里库存。系统已迭代到 V1.0.2，<span class="hl">全家人每天都在用</span>——课堂上他依然是助教，帮忙解决同学的技术问题。`,
+    quote:"AI 做出来的系统，先服务好自己家。",
+    works:{
+      title:"家庭营养 · 食材规划系统",
+      desc:"为孕产妇与幼儿定制的家庭营养管理工具——餐单、营养追踪、采购清单，一站搞定。",
+      points:[
+        ["6餐次双列餐单","孕妈与幼儿分餐管理，「一锅两吃」不折腾"],
+        ["营养追踪","对照 DRIs 2023 标准，达标 / 偏低 / 超标一眼可见"],
+        ["智能采购","按食谱自动汇总，扣减家里库存再开单"],
+        ["双模存储","本地 SQLite 零依赖，线上可切 Supabase 数据库"]
+      ],
+      stats:[["24道","家庭食谱库"],["6餐次","每日双列餐单"],["V1.0.2","家庭日常使用中"]]
+    }
+  }
+];
+
+const ROBIN = {
+  lpsiVideo:{src:"videos/16x9/Robin_DD01_股票强度指数_16x9.mp4", title:"DD01 ·《澳洲华人是如何应用AI去协助你投资股票的》", sub:"蜗牛3D动画视频专家团出品 · 全网已发行"},
+  lpsi:{
+    chip:"导师项目 · 一", title:"股票强度指数系统 LPSI",
+    desc:`Robin 的自用投资系统，如今每天自动运转：<b>A股 5196 只 + 港股 + 美股 + 澳股</b>全市场覆盖，数据每天自动下载、每天计算。<br><br>16 周期强度指数揭示一个规律：<span class="hl">时间越长、倍数越高</span>——月 / 季 / 年 / 三年周期强度排行，行业轮动一目了然。`,
+    points:[
+      ["全市场覆盖","A股 5196 只 + 港股 + 美股 + 澳股，每日自动更新"],
+      ["16 周期强度指数","个股与行业多周期强度排行，轮动信号直观"],
+      ["AI 全市场建议","按规则自动筛出候选股（毛利率、价格区间等）"],
+      ["持仓 AI 评分","买卖评分 + 强度预警，纪律化持仓管理"]
+    ],
+    stats:[["5196","A股全覆盖"],["16","周期强度指数"],["每日","自动下载计算"],["24/7","Mac mini 常驻"]]
+  },
+  teamVideo:{src:"videos/16x9/Robin_DD03_3D制作团_16x9.mp4", title:"DD03 ·《九人军团 — 蜗牛3D视频制作团自我介绍》", sub:"九位 AI 专家的组团亮相"},
+  team:{
+    chip:"导师项目 · 二", title:"蜗牛3D视频制作团 · 九人军团",
+    desc:`Robin 用 AI 搭建的<b>全自动 3D 动画工作室</b>：九位数字员工各司其职，从剧本到成片到全网发行，全程无需人工剪辑。<br><br>本次毕业展的开场视频、每位学员的专属宣传片（EP01–EP05、DD01–DD04），全部出自这个团队——<span class="hl">你今晚看到的所有视频，都是它做的</span>。`,
+    points:[
+      ["九人分工","导演景程 / 编剧文澜 / 建模塑影 / 文案词锋 / 绘画绘影 / 配音声澜 / 动效幕动 / 剪辑辑光 / 发行播远"],
+      ["全流程自动","剧本 → 出图 → 烧制 → 配音 → 合成 → 三平台定时发行"],
+      ["角色库 24+ 资产","学员真实照片 3D 化入库，今晚海报上走出来的人都在里面"],
+      ["10 部作品","EP00–EP05 + DD01–DD04 已全网发行"]
+    ],
+    stats:[["9人","AI 专家团"],["10部","已发行动画片"],["3平台","抖音/小红书/视频号"],["0秒","人工剪辑"]]
+  }
+};
+
+/* ================= 渲染（整页连续滚动版式） ================= */
+const sectionsHTML = [];
+
+function chip(text, cls){return `<div class="chip ${cls||''}">${text}</div>`;}
+function brandmark(){return `<div class="brandmark"><img class="logo-chip" src="images/snailai_logo.png" alt="蜗牛AI">蜗牛AI · 首届毕业展</div>`;}
+function scrolldown(text){return `<div class="scrolldown">${text||'往下滑'}</div>`;}
+
+/* 封面 */
+sectionsHTML.push(`
+<section class="slide cover">
+  <div class="kicker">SNAIL AI · FIRST GRADUATION SHOW</div>
+  <h1 class="big">首届蜗牛AI毕业展</h1>
+  <div class="accentbar"></div>
+  <div class="sub" style="font-size:clamp(16px,2.6vh,24px);color:var(--ink2);font-weight:600;">
+    一群 AI 小白，把毕业作品做成了真项目
+  </div>
+  <div class="meta">
+    <div class="pill solid">2026 年 9 月 26 日（周六）13:30</div>
+    <div class="pill">Killara Golf Club · Billiards Room</div>
+    <div class="pill">13 位学员 · 现场展示</div>
+  </div>
+  <div class="footline"><img class="logo-chip" src="images/snailai_logo.png" alt="蜗牛AI" style="height:1.6em;"> 蜗牛AI · 澳大利亚华人 AI 应用教育 · snailai.au</div>
+  ${scrolldown('往下滑 · 开场视频')}
+</section>`);
+
+/* 影院式视频舞台：模糊背景（首帧海报）+ 视频居中 */
+function videoStage(src, videoAttrs=""){
+  const name = src.split("/").pop().replace(/\.mp4$/,"");
+  const poster = `posters/${encodeURIComponent(name)}.jpg`;
+  return `<div class="vstage">
+    <div class="vbg" style="background-image:url('${poster}')"></div>
+    <div class="vwrap"><video src="${src}" controls preload="metadata" playsinline ${videoAttrs}></video></div>
+  </div>`;
+}
+
+/* 开场视频 */
+sectionsHTML.push(`
+<section class="slide video-slide">
+  <div class="vhead">
+    <div>
+      <div class="vtitle">${OPENING_VIDEO.title}</div>
+      <div class="vsub">${OPENING_VIDEO.sub}</div>
+    </div>
+  </div>
+  ${videoStage(OPENING_VIDEO.src)}
+</section>`);
+
+/* 学生总览 */
+const ovCards = STUDENTS.map(s=>`
+  <div class="ov-card ${s.hasVideo?'video':''}">
+    <div class="idx">${String(s.idx).padStart(2,'0')}</div>
+    <div class="nm">${s.name}</div>
+    <div class="pj">${s.project}</div>
+  </div>`).join('');
+sectionsHTML.push(`
+<section class="slide">
+  ${brandmark()}
+  ${chip("今日流程 · 学员展览")}
+  <h2 class="title">13 位学员 · 依次登台</h2>
+  <div class="accentbar"></div>
+  <div class="ov-grid">${ovCards}
+    <div class="ov-card" style="background:var(--ink);color:#fff;">
+      <div class="nm" style="color:#fff;">压轴 · Robin</div>
+      <div class="pj" style="color:rgba(255,255,255,.6);">股票强度指数 + 3D制作团</div>
+    </div>
+    <div class="ov-card" style="background:var(--accent-warm);border-color:rgba(255,91,31,.3);">
+      <div class="nm" style="color:var(--accent2);">最后 · 课程</div>
+      <div class="pj" style="color:var(--ink3);">A$1,999 蜗牛AI应用课程</div>
+    </div>
+  </div>
+  ${scrolldown('学员展览开始')}
+</section>`);
+
+/* 学生节 */
+for(const s of STUDENTS){
+  if(s.hasVideo){
+    sectionsHTML.push(`
+<section class="slide video-slide">
+  <div class="vhead">
+    <div>
+      <div class="vtitle">${s.video.title}</div>
+      <div class="vsub">${s.video.sub}</div>
+    </div>
+  </div>
+  ${videoStage(s.video.src)}
+</section>`);
+  }
+  const realLabel = s.realIsPoster ? "海报形象" : "真实照片";
+  sectionsHTML.push(`
+<section class="slide">
+  ${brandmark()}
+  ${chip("学员展览 · "+String(s.idx).padStart(2,'0')+" / 13")}
+  <div class="stu-head">
+    <div class="stu-name">${s.name}</div><div class="stu-en">${s.en}</div>
+  </div>
+  <div class="stu-proj-chip">💼 ${s.project}</div>
+  <div class="stu-grid">
+    <div class="photocard">
+      <div class="ph"><img src="${s.real}" alt="${s.name}"><div class="tag">${realLabel}</div></div>
+      <div class="ph transparent"><img src="${s.threeD}" alt="${s.name} 3D"><div class="tag">3D 形象</div></div>
+    </div>
+    <div class="stu-info">
+      <div class="role">${s.role}</div>
+      <div class="story">${s.story}</div>
+      <div class="quotebox">💬 ${s.quote}</div>
+    </div>
+  </div>
+</section>`);
+  sectionsHTML.push(`
+<section class="slide">
+  ${brandmark()}
+  ${chip("作品展示 · "+s.name,"gold")}
+  <h2 class="title">${s.works.title}</h2>
+  <div class="accentbar"></div>
+  <div class="works-grid">
+    <div class="works-main">
+      <div class="works-desc">${s.works.desc}</div>
+      <div class="featurelist">
+        ${s.music?`
+        <div class="feature musicrow" data-src="${s.music.src}" onclick="toggleMusic(this)">
+          <div class="num">0</div>
+          <div><div class="ft">${s.music.title}</div><div class="fd">${s.music.desc} · <span class="mstat">▶ 点击播放</span></div></div>
+          <div class="playbtn">▶</div>
+        </div>`:''}
+        ${s.works.points.map((p,i)=>`
+        <div class="feature"><div class="num">${i+1}</div>
+          <div><div class="ft">${p[0]}</div><div class="fd">${p[1]}</div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="statcard">
+      ${s.works.stats.map((st,i)=>`
+        ${i>0?'<div class="divider"></div>':''}
+        <div class="row"><div class="v">${st[0]}</div><div class="k">${st[1]}</div></div>`).join('')}
+    </div>
+  </div>
+</section>`);
+}
+
+/* Robin 部分 */
+sectionsHTML.push(`
+<section class="slide video-slide">
+  <div class="vhead">
+    <div>
+      <div class="vtitle">${ROBIN.lpsiVideo.title}</div>
+      <div class="vsub">${ROBIN.lpsiVideo.sub}</div>
+    </div>
+  </div>
+  ${videoStage(ROBIN.lpsiVideo.src)}
+</section>`);
+sectionsHTML.push(`
+<section class="slide">
+  ${brandmark()}
+  ${chip(ROBIN.lpsi.chip,"gold")}
+  <h2 class="title">${ROBIN.lpsi.title}</h2>
+  <div class="accentbar"></div>
+  <div class="works-grid">
+    <div class="works-main">
+      <div class="works-desc">${ROBIN.lpsi.desc}</div>
+      <div class="featurelist">
+        ${ROBIN.lpsi.points.map((p,i)=>`
+        <div class="feature"><div class="num">${i+1}</div>
+          <div><div class="ft">${p[0]}</div><div class="fd">${p[1]}</div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="statcard">
+      ${ROBIN.lpsi.stats.map((st,i)=>`
+        ${i>0?'<div class="divider"></div>':''}
+        <div class="row"><div class="v">${st[0]}</div><div class="k">${st[1]}</div></div>`).join('')}
+    </div>
+  </div>
+</section>`);
+sectionsHTML.push(`
+<section class="slide video-slide">
+  <div class="vhead">
+    <div>
+      <div class="vtitle">${ROBIN.teamVideo.title}</div>
+      <div class="vsub">${ROBIN.teamVideo.sub}</div>
+    </div>
+  </div>
+  ${videoStage(ROBIN.teamVideo.src)}
+</section>`);
+sectionsHTML.push(`
+<section class="slide">
+  ${brandmark()}
+  ${chip(ROBIN.team.chip,"gold")}
+  <h2 class="title">${ROBIN.team.title}</h2>
+  <div class="accentbar"></div>
+  <div class="works-grid">
+    <div class="works-main">
+      <div class="works-desc">${ROBIN.team.desc}</div>
+      <div class="featurelist">
+        ${ROBIN.team.points.map((p,i)=>`
+        <div class="feature"><div class="num">${i+1}</div>
+          <div><div class="ft">${p[0]}</div><div class="fd">${p[1]}</div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="statcard">
+      ${ROBIN.team.stats.map((st,i)=>`
+        ${i>0?'<div class="divider"></div>':''}
+        <div class="row"><div class="v">${st[0]}</div><div class="k">${st[1]}</div></div>`).join('')}
+    </div>
+  </div>
+</section>`);
+
+/* ===== 「蜗牛AI 到底教什么」课程视频屏（课程页前导） ===== */
+/* 视频由 Robin 自制；完成后命名为「课程介绍_蜗牛AI教什么.mp4」放入 videos/ 即自动接入 */
+const COURSE_VIDEO = {
+  src:"videos/课程介绍_蜗牛AI教什么.mp4",
+  title:"蜗牛AI 到底教什么 · 课程介绍视频",
+  sub:"Robin 出品 · 3 分钟看懂蜗牛AI 教什么"
+};
+sectionsHTML.push(`
+<section class="slide video-slide">
+  <div class="vhead">
+    <div>
+      <div class="vtitle">${COURSE_VIDEO.title}</div>
+      <div class="vsub">${COURSE_VIDEO.sub}</div>
+    </div>
+  </div>
+  <div class="vstage">
+    <div class="vbg"></div>
+    <div class="vwrap" id="course-video-wrap">
+      <video src="${COURSE_VIDEO.src}" controls preload="metadata" playsinline id="course-video-el"></video>
+      <div class="vplaceholder" id="course-video-ph">
+        <div class="ph-emoji">🎬</div>
+        <div class="ph-title">视频制作中</div>
+        <div class="ph-desc">完成后将文件命名为「课程介绍_蜗牛AI教什么.mp4」<br>放入 PPT/videos/ 文件夹，重新打开本页即可自动播放</div>
+      </div>
+    </div>
+  </div>
+</section>`);
+
+/* 课程节 */
+sectionsHTML.push(`
+<section class="slide">
+  ${brandmark()}
+  ${chip("蜗牛AI · 学员招募","green")}
+  <h2 class="title">下一个登台的，就是你</h2>
+  <div class="course-grid">
+    <div class="pricecard">
+      <div class="cname"><img class="logo-chip" src="images/snailai_logo.png" alt="蜗牛AI" style="height:1.6em;"> 蜗牛AI 澳洲应用课程</div>
+      <div>
+        <div class="price">A$1,999</div>
+        <div class="per">两个月一期 · 线下 + 线上双通道</div>
+      </div>
+      <div style="color:rgba(255,255,255,.7);font-size:clamp(12.5px,1.9vh,16px);line-height:1.8;">
+        专为澳洲华人设计 · 从零基础到做出自己的真项目<br>
+        今晚 13 位学员的作品，就是这门课的成果清单
+      </div>
+      <div class="buy-row">
+        <div class="cta-big">snailai.au/course<small>扫码咨询 · 助教 Jason 微信人工开通 · Stripe / 微信 / 支付宝均可付款</small></div>
+        <div class="qrcard"><img src="images/course_qr.jpg" alt="蜗牛AI课程现场报名群"><small>微信扫码 · 入群现场报名</small></div>
+      </div>
+    </div>
+    <div class="checklist">
+      <div class="it"><b>AI 桌面代理 WorkBuddy</b>——你的 24 小时数字员工，写作 / 网站 / 自动化全能</div>
+      <div class="it"><b>AI 网站开发</b>——不懂代码也能做出真实上线的网站（今晚每一个作品都是证明）</div>
+      <div class="it"><b>AI 自动化工作流</b>——邮件、账单、客户管理，让系统替你把事情办完</div>
+      <div class="it"><b>AI 3D 视频制作</b>——角色 3D 化、海报动起来、专属宣传片（EP/DD 全套技术）</div>
+      <div class="it"><b>AI 股票研究工具</b>——LPSI 强度指数体系与选股器搭建方法</div>
+      <div class="it"><b>输出式教学</b>——以做出真实项目为毕业标准，不做纸上谈兵</div>
+      <div class="it"><b>第二期 10 月开课</b>——两个月后，欢迎来你的毕业展</div>
+    </div>
+  </div>
+</section>`);
+
+/* 结尾 */
+sectionsHTML.push(`
+<section class="slide end">
+  <img class="logo-chip lg" src="images/snailai_logo.png" alt="蜗牛AI" style="margin-bottom:clamp(14px,2.6vh,28px);">
+  <h1>谢谢观看</h1>
+  <div class="sub2">首届蜗牛AI毕业展 · 2026.09.26 · Killara Golf Club<br>
+  13 位学员 · 13 个真项目 · 每一个都值得被看见</div>
+  <div class="url">snailai.au/course</div>
+</section>`);
+
+/* 写入 DOM（body 直接滚动，不再有 stage 跳页） */
+document.body.insertAdjacentHTML('beforeend', sectionsHTML.join(''));
+const slides = [...document.querySelectorAll('.slide')];
+slides.forEach(s=>{const no=document.createElement('div');no.className='slide-no';s.appendChild(no);});
+
+/* ================= 滚动逻辑 ================= */
+let cur = 0;
+const counterEl = document.createElement('div');
+counterEl.id='counter';document.body.appendChild(counterEl);
+const hintEl = document.createElement('div');
+hintEl.id='hint';hintEl.textContent='滚轮 / ↓↑ / 空格 整页滚动 · F 全屏 · 视频滚出自动暂停';
+document.body.appendChild(hintEl);
+const bar = document.createElement('div');
+bar.id='topbar';bar.innerHTML='<div id="progress"></div>';
+document.body.appendChild(bar);
+const progEl = bar.querySelector('#progress');
+
+const pad=n=>n<10?'0'+n:''+n;
+function updateActive(){
+  const mid = window.scrollY + window.innerHeight/2;
+  let best=0;
+  slides.forEach((s,i)=>{ if(s.offsetTop <= mid) best=i; });
+  if(best!==cur){
+    slides[cur] && slides[cur].classList.remove('active');
+    cur=best;
+    slides[cur].classList.add('active');
+  }
+  counterEl.textContent = pad(cur+1)+' / '+pad(slides.length);
+  progEl.style.width = ((cur+1)/slides.length*100)+'%';
+}
+window.addEventListener('scroll', updateActive, {passive:true});
+window.addEventListener('resize', updateActive);
+
+/* 视频滚出屏幕自动暂停（滚动版式的关键行为）；音乐同理 */
+const vio = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    const v=e.target;
+    if(!e.isIntersecting && v.pause && !v.paused) v.pause();
+    if(!e.isIntersecting && window.__mAudio && v.contains && v.contains(window.__mAudio) && !window.__mAudio.paused){
+      window.__mAudio.pause(); resetMusicRow();
+    }
+  });
+},{threshold:.25});
+document.querySelectorAll('video').forEach(v=>vio.observe(v));
+document.querySelectorAll('.musicrow').forEach(el=>vio.observe(el));
+
+/* Maureen 音乐：点击播放 / 再点暂停（单例音频） */
+window.__mAudio=null; window.__mRow=null;
+function toggleMusic(row){
+  if(!window.__mAudio){
+    window.__mAudio=new Audio(row.dataset.src);
+    window.__mAudio.addEventListener('ended',()=>{resetMusicRow();});
+  }
+  window.__mRow=row;
+  const a=window.__mAudio;
+  if(a.paused){
+    a.play().catch(err=>console.warn('音频播放失败:',err));
+    row.classList.add('playing');
+    row.querySelector('.mstat').textContent='♪ 正在播放 · 再点暂停';
+    row.querySelector('.playbtn').textContent='❚❚';
+  }else{
+    a.pause();
+    resetMusicRow();
+  }
+}
+function resetMusicRow(){
+  if(window.__mRow){
+    window.__mRow.classList.remove('playing');
+    const ms=window.__mRow.querySelector('.mstat'); if(ms) ms.textContent='▶ 点击播放';
+    const pb=window.__mRow.querySelector('.playbtn'); if(pb) pb.textContent='▶';
+  }
+}
+
+/* 课程视频占位检测：文件就位 → 隐藏占位层正常播放 */
+(function(){
+  const el=document.getElementById('course-video-el');
+  const ph=document.getElementById('course-video-ph');
+  if(!el||!ph)return;
+  el.addEventListener('loadeddata',()=>ph.classList.add('hidden'));
+  el.addEventListener('canplay',()=>ph.classList.add('hidden'));
+  el.addEventListener('error',()=>{ph.classList.remove('hidden');el.removeAttribute('controls');});
+})();
+
+/* 键盘：整页逐屏滚动 */
+function snapTo(i){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  slides[i].scrollIntoView({behavior:'smooth'});
+}
+document.addEventListener('keydown',e=>{
+  if(['ArrowDown','PageDown',' ','ArrowRight'].includes(e.key)){e.preventDefault();snapTo(cur+1);}
+  else if(['ArrowUp','PageUp','ArrowLeft'].includes(e.key)){e.preventDefault();snapTo(cur-1);}
+  else if(e.key==='Home'){e.preventDefault();snapTo(0);}
+  else if(e.key==='End'){e.preventDefault();snapTo(slides.length-1);}
+  else if(e.key==='f'||e.key==='F'){
+    if(!document.fullscreenElement){document.documentElement.requestFullscreen();}
+    else{document.exitFullscreen();}
+  }
+});
+updateActive();
+</script>
+</body>
+</html>
